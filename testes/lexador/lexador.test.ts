@@ -27,5 +27,31 @@ describe('Lexador Diagramas', () => {
       expect(resultado.erros).toStrictEqual([])
       expect(resultado.simbolos.length).toEqual(13)
     })
+    it('Node de fluxograma com texto', () => {
+      const codigo: string[] = [
+        '---',
+        'title: Node',
+        '---',
+        'flowchart LR',
+        '    id[Texto]',
+      ]
+      const resultado = lexador.mapear(codigo)
+
+      expect(resultado.erros).toStrictEqual([])
+      expect(resultado.simbolos.length).toEqual(16)
+    })
+    it('Node de fluxograma com texto unicode', () => {
+      const codigo: string[] = [
+        '---',
+        'title: Node',
+        '---',
+        'flowchart LR',
+        '    id["Isso é ❤ unicode"]',
+      ]
+      const resultado = lexador.mapear(codigo)
+
+      expect(resultado.erros).toStrictEqual([])
+      expect(resultado.simbolos.length).toEqual(21)
+    })
   })
 })

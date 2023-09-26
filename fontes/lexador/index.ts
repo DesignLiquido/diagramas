@@ -53,40 +53,12 @@ export class Lexador {
   const numeroCompleto = this.codigo.substring(this.inicioSimbolo, this.atual);
   this.adicionarSimbolo(tiposDeSimbolos.NUMERO, parseFloat(numeroCompleto), numeroCompleto);
   }
-
+  
   private eAlfabeto(caractere: string): boolean {
-    const acentuacoes = [
-        'á',
-        'Á',
-        'ã',
-        'Ã',
-        'â',
-        'Â',
-        'à',
-        'À',
-        'é',
-        'É',
-        'ê',
-        'Ê',
-        'í',
-        'Í',
-        'ó',
-        'Ó',
-        'õ',
-        'Õ',
-        'ô',
-        'Ô',
-        'ú',
-        'Ú',
-        'ç',
-        'Ç',
-        '_',
-    ];
-    return (
-        (caractere >= 'a' && caractere <= 'z') ||
-        (caractere >= 'A' && caractere <= 'Z') ||
-        acentuacoes.includes(caractere)
-    );
+    // Expressão regular para validar caracteres Unicode e emojis
+    const regexUnicode = /^[\p{Letter}\p{Emoji}_]+$/u;
+    
+    return regexUnicode.test(caractere);
   }
 
   private eAlfabetoOuDigito(caractere: string): boolean {
@@ -113,24 +85,52 @@ export class Lexador {
     const caractere = this.simboloAtual()
 
     switch (caractere) {
+      case '[':
+        this.adicionarSimbolo(tiposDeSimbolos.ABRE_COLCHETE, null, '[')
+        this.avancar()
+        break;
+      case ']':
+        this.adicionarSimbolo(tiposDeSimbolos.FECHA_COLCHETE, null, ']')
+        this.avancar()
+        break;
+      case '{':
+        this.adicionarSimbolo(tiposDeSimbolos.ABRE_CHAVE, null, '{')
+        this.avancar()
+        break;
+      case '}':
+        this.adicionarSimbolo(tiposDeSimbolos.FECHA_CHAVE, null, '}')
+        this.avancar()
+        break;
+      case '"':
+        this.adicionarSimbolo(tiposDeSimbolos.APOSTROFO, null, '"')
+        this.avancar()
+        break;
+      case '(':
+        this.adicionarSimbolo(tiposDeSimbolos.ABRE_PARENTESES, null, '(')
+        this.avancar()
+        break;
+      case ')':
+        this.adicionarSimbolo(tiposDeSimbolos.FECHA_PARENTESES, null, ')')
+        this.avancar()
+        break;
       case '-':
         this.avancar()
         if (this.proximoSimbolo() === '-') {
           this.avancar()
           if (this.proximoSimbolo() === '-') {
             this.avancar()
-            this.adicionarSimbolo(tiposDeSimbolos.MARKDOWN, null)
+            this.adicionarSimbolo(tiposDeSimbolos.MARKDOWN, null, '---')
             break;
           }
         }
       case '\n':
-        this.adicionarSimbolo(tiposDeSimbolos.QUEBRA_LINHA, null)
+        this.adicionarSimbolo(tiposDeSimbolos.QUEBRA_LINHA, null, '\n')
         this.avancar()
         this.linha++
         break;
       case ':':
         this.avancar()
-        this.adicionarSimbolo(tiposDeSimbolos.DOIS_PONTOS, null)
+        this.adicionarSimbolo(tiposDeSimbolos.DOIS_PONTOS, null, ':')
         break;
       case ' ':
       case '\r':

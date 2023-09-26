@@ -13,5 +13,19 @@ describe('Lexador Diagramas', () => {
       const resultado = lexador.mapear(codigo)
       expect(resultado).toEqual({ simbolos: [], erros: [] })
     })
+
+    it('Node de fluxograma padrão', () => { 
+      const codigo: string[] = [
+        '---',
+        'title: Node',
+        '---',
+        'flowchart LR',
+        '    id',
+      ]
+      const resultado = lexador.mapear(codigo)
+
+      expect(resultado.erros).toStrictEqual([])
+      expect(resultado.simbolos.length).toEqual(13)
+    })
   })
 })

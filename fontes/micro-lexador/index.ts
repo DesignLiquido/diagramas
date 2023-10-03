@@ -1,18 +1,17 @@
 /// <reference path="./index.d.ts" />
-import { MicroLexador } from '../micro-lexador';
-import { SimboloInterface } from '../simbolo';
-import tiposDeSimbolos from '../tipos-de-simbolos';
-import { palavrasReservadas } from './palavras-reservadas';
-import { Simbolo } from './simbolo';
+import { palavrasReservadas } from "../lexador/palavras-reservadas";
+import { Simbolo } from "../lexador/simbolo";
+import { SimboloInterface } from "../simbolo";
+import tiposDeSimbolos from "../tipos-de-simbolos";
 
-export class Lexador {
+export class MicroLexador {
   simbolos: SimboloInterface[] = []
-  erros: LexadorNamespace.ErrorLexadorType[] = []
+  erros: MicroLexadorNamespace.ErrorLexadorType[] = []
   inicioSimbolo: number = 0
   atual: number = 0
   linha: number = 1
   codigo: string = ''
-  microLexador: MicroLexador = new MicroLexador
+
 
   private eFinalDoCodigo(): boolean {
     return this.atual >= this.codigo.length
@@ -43,16 +42,16 @@ export class Lexador {
   private analisarNumero(): void { 
     while (this.eDigito(this.simboloAtual())) {
       this.avancar();
-  }
-  if (this.simboloAtual() == '.' && this.eDigito(this.proximoSimbolo())) {
+    }
+    if (this.simboloAtual() == '.' && this.eDigito(this.proximoSimbolo())) {
       this.avancar();
 
       while (this.eDigito(this.simboloAtual())) {
           this.avancar();
       }
-  }
-  const numeroCompleto = this.codigo.substring(this.inicioSimbolo, this.atual);
-  this.adicionarSimbolo(tiposDeSimbolos.NUMERO, parseFloat(numeroCompleto), numeroCompleto);
+    }
+    const numeroCompleto = this.codigo.substring(this.inicioSimbolo, this.atual);
+    this.adicionarSimbolo(tiposDeSimbolos.NUMERO, parseFloat(numeroCompleto), numeroCompleto);
   }
   
   private eAlfabeto(caractere: string): boolean {
@@ -82,7 +81,9 @@ export class Lexador {
 }
 
 
-  private analisarSimbolo(): void { 
+
+
+  private analisarsimbolo(): void { 
     const caractere = this.simboloAtual()
 
     switch (caractere) {
@@ -157,24 +158,23 @@ export class Lexador {
 
 
 
-
-  mapear(codigo: string[]): LexadorNamespace.RetornoLexadorInterface<SimboloInterface, LexadorNamespace.ErrorLexadorType> {
-    
+  
+  mapear(codigo: string[]): MicroLexadorNamespace.RetornoMicroLexadorInterface<SimboloInterface, MicroLexadorNamespace.ErrorLexadorType> {
     this.codigo = codigo.join('\n') || ''
 
     if (codigo.length > 0) {
       this.codigo += '\n'
 
-      while(!this.eFinalDoCodigo())
+      while(!this.eFinalDoCodigo()) 
       {
         this.inicioSimbolo = this.atual
-        this.analisarSimbolo()
+        this.analisarsimbolo()
       }
-   }
+    }
 
     return {
       simbolos: this.simbolos,
-      erros: this.erros
+      erros: this.erros,
     }
   }
 }

@@ -53,5 +53,21 @@ describe('Lexador Diagramas', () => {
       expect(resultado.erros).toStrictEqual([])
       expect(resultado.simbolos.length).toEqual(21)
     })
+    it('Node de fluxograma encapsulando markdown dentro de texto', () => {
+      const codigo: string[] = [
+        '%%{init: {"flowchart": {"htmlLabels": false}}}%%',
+        'flowchart LR',
+        '   markdown["`This **is** _Markdown_`"]',
+        '   newLines["`Line1',
+        '   Line2',
+        '   Line 3`"]',
+        '   markdown --> newLines'
+      ]
+
+      const resultado = lexador.mapear(codigo)
+
+      expect(resultado.erros).toStrictEqual([])
+      //expect(resultado.simbolos.length)
+    })
   })
 })

@@ -159,16 +159,22 @@ export class MicroLexador {
 
 
   
-  mapear(codigo: string[]): MicroLexadorNamespace.RetornoMicroLexadorInterface<SimboloInterface, MicroLexadorNamespace.ErrorLexadorType> {
-    this.codigo = codigo.join('\n') || ''
-
+  mapear(codigo: string): MicroLexadorNamespace.RetornoMicroLexadorInterface<SimboloInterface, MicroLexadorNamespace.ErrorLexadorType> {
     if (codigo.length > 0) {
-      this.codigo += '\n'
+      this.adicionarSimbolo(tiposDeSimbolos.INICIALIZACAO, null, "%%")
 
       while(!this.eFinalDoCodigo()) 
       {
         this.inicioSimbolo = this.atual
-        this.analisarsimbolo()
+        if (this.simboloAtual() === '%'){
+          this.avancar()
+          if (this.simboloAtual() === '%') {
+            this.avancar()
+            this.adicionarSimbolo(tiposDeSimbolos.CONFIGURACAO, null, JSON.parse(this.codigo.slice(0, this.atual)))
+            this.adicionarSimbolo(tiposDeSimbolos.FIM_INICIALIZACAO, null, '%%')
+            break;
+          } 
+        }
       }
     }
 

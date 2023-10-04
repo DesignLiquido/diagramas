@@ -86,6 +86,12 @@ export class Lexador {
     const caractere = this.simboloAtual()
 
     switch (caractere) {
+      case '%':
+        this.avancar()
+        if (this.simboloAtual() === '%'){
+          this.microLexador.mapear(this.codigo.slice(this.atual))
+        }
+        break
       case '[':
         this.adicionarSimbolo(tiposDeSimbolos.ABRE_COLCHETE, null, '[')
         this.avancar()
